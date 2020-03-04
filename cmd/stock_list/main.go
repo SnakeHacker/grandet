@@ -19,7 +19,13 @@ func main() {
 		return
 	}
 
-	err = common.SaveSimpleXlsx("stock_list", "", "stock_list", resp.Data.Fields, resp.Data.Items)
+	filename := "stock_list"
+	outputDir := ""
+	sheet := "stock_list"
+	header := resp.Data.Fields
+	data := resp.Data.Items
+
+	err = common.SaveSimpleXlsx(filename, outputDir, sheet, header, data)
 	if err != nil {
 		glog.Error(err)
 		return
