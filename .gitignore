@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# excel
+*.xlsx
+
+# mac os
+.DS_Store
+
+Makefile
