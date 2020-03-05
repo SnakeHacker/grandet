@@ -1,0 +1,18 @@
+db:
+    username: grandet_test
+    password: grandet_test
+    host: localhost
+    port: 5432
+    database: grandet_db
+    reset: true
+    reconnect_sec: 3
+    sql_dir: ${YOUR_SQL_DIR}
+web:
+    port: 8888
+    write_timeout_sec: 10
+    read_timeout_sec: 10
+    read_header_timeout_sec: 10
+    idle_timeout_sec: 10
+    shutdown_wait_sec: 10
+storage_db: true
+storage_excel: false

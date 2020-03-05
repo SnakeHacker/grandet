@@ -1,0 +1,14 @@
+export TUSHARE_TOKEN=${YOUR_TUSHARE_TOKEN}
+export TUSHARE_API=https://api.tushare.pro
+
+requirement:
+	go get -v ./...
+
+up:
+	docker-compose up -d
+
+down:
+	docker-compose down
+
+stock_list:
+	go run cmd/stock_list/main.go -c=conf.yaml
