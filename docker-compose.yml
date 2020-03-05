@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  grandet_db:
+    image: postgres:11.1
+    environment:
+      POSTGRES_PASSWORD: grandet_test
+      POSTGRES_USER: grandet_test
+      POSTGRES_DB: grandet_test
+    container_name: grandet_db
+    ports:
+      - 5432:5432
+    volumes:
+      - /tmp/grandet_db/pgdata:/var/lib/postgresql/data
