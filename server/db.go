@@ -1,22 +1,14 @@
 package server
 
 import (
-	"database/sql"
 	"fmt"
-	"io/ioutil"
-	"strings"
 	"time"
 
-	"github.com/SnakeHacker/grandet/common"
-	"github.com/SnakeHacker/grandet/common/utils/io"
 	"github.com/golang/glog"
-	_ "github.com/lib/pq"
-)
 
-const (
-	CREATE_TABLE_SUFFIX = ".create.sql"
-	UP_TABLE_SUFFIX     = ".up.sql"
-	DOWN_TABLE_SUFFIX   = ".down.sql"
+	"github.com/SnakeHacker/grandet/common"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 //DBConf ...
@@ -49,64 +41,47 @@ func (c DBConf) validate() error {
 }
 
 // NewPostgreSQL ...
-func NewPostgreSQL(conf DBConf) (db *sql.DB, err error) {
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
-		conf.Username,
-		conf.Password,
-		conf.Host,
-		conf.Port,
-		conf.Database,
-	)
-	return sql.Open("postgres", connStr)
-}
+func NewPostgreSQL(conf DBConf) (db *gorm.DB, err error) {
+	db, err = gorm.Open("postgres",
+		fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable password=%s",
+			conf.Host,
+			conf.Port,
+			conf.Username,
+			conf.Database,
+			conf.Password))
 
-func (s *Servlet) autoReConnectDB() (err error) {
-	for {
-		if s.DB.Ping() != nil {
-			s.DB, err = NewPostgreSQL(s.Conf.DB)
-			if err != nil {
-				glog.Error(err)
-			}
-		}
-		time.Sleep(s.Conf.DB.ReconnectSec * time.Second)
-	}
-}
-
-func execSQLFile(db *sql.DB, sqlPath string) (err error) {
-	content, err := ioutil.ReadFile(sqlPath)
-	if err != nil {
-		glog.Error(err)
-		return
-	}
-	sqls := strings.Split(string(content), ";")
-	for _, s := range sqls {
-		if s != "" {
-			if _, err = db.Exec(s); err != nil {
-				glog.Errorf("%s, Err: %v", s, err)
-				return
-			}
-		}
-	}
-	return
-}
-
-func batchExecSQLFileWithSuffix(db *sql.DB, sqlDir, suffix string) (err error) {
-	files, err := io.GetFilesWithSuffix(sqlDir, suffix)
 	if err != nil {
 		glog.Error(err)
 		return
 	}
 
-	for _, f := range files {
-		if err = execSQLFile(db, f); err != nil {
-			glog.Error(err)
-			return
-		}
-	}
+	db.DB().SetMaxIdleConns(10)
+	db.DB().SetMaxOpenConns(100)
+
 	return
 }
 
-// // InsertStocks ...
-// func (s *Servlet) InsertStocks(stock tushare.StockBasicResponse) (err error) {
-// 	s.DB.
-// }
+// CreateTables create all tables
+func (s *Servlet) CreateTables() (err error) {
+	return s.DB.CreateTable(&StockMeta{}).Error
+}
+
+// DropTables drop all tables
+func (s *Servlet) DropTables() (err error) {
+	return s.DB.DropTableIfExists(&StockMeta{}).Error
+}
+
+// ResetTables drop and create tables
+func (s *Servlet) ResetTables() (err error) {
+	if err = s.DropTables(); err != nil {
+		glog.Error(err)
+		return
+	}
+
+	if err = s.CreateTables(); err != nil {
+		glog.Error(err)
+		return
+	}
+
+	return
+}

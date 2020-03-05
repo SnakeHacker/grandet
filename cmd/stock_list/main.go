@@ -7,7 +7,6 @@ import (
 
 	"github.com/SnakeHacker/grandet/common/utils/io"
 	"github.com/SnakeHacker/grandet/server"
-	"github.com/SnakeHacker/grandet/tushare"
 )
 
 func main() {
@@ -20,23 +19,30 @@ func main() {
 		glog.Fatal(err)
 	}
 
-	resp, err := tushare.StockBasic()
+	glog.Info("Start new server...")
+	s, err := server.New(conf)
+	if err != nil {
+		glog.Error(err)
+		return
+	}
+
+	resp, err := s.Tushare.StockBasic()
 	if err != nil {
 		glog.Error(err)
 		return
 	}
 
 	if conf.StorageDB {
-		glog.Info("storage stocks into db")
-		_, err := server.New(conf)
-		if err != nil {
+		glog.Info("Inserting stocks into db ...")
+		if err = s.BatchInsertStockMeta(resp.Data.Fields, resp.Data.Items); err != nil {
 			glog.Error(err)
 			return
 		}
+		glog.Info("Insert stocks into db successfully!")
 	}
 
 	if conf.StorageExcel {
-		glog.Info("storage stocks into xlsx")
+		glog.Info("Storage stocks into xlsx")
 
 		filename := "stock_list"
 		outputDir := ""

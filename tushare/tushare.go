@@ -7,8 +7,12 @@ import (
 	"github.com/golang/glog"
 )
 
-// API get tushare API URL and Token
-func API() (url, token string, err error) {
+type TuShare struct {
+	URL   string
+	Token string
+}
+
+func New() (t *TuShare, err error) {
 	url, has := os.LookupEnv("TUSHARE_API")
 	if !has {
 		err = common.ErrTushareURL
@@ -16,11 +20,16 @@ func API() (url, token string, err error) {
 		return
 	}
 
-	token, has = os.LookupEnv("TUSHARE_TOKEN")
+	token, has := os.LookupEnv("TUSHARE_TOKEN")
 	if !has {
 		err = common.ErrTushareToken
 		glog.Error(err)
 		return
+	}
+
+	t = &TuShare{
+		URL:   url,
+		Token: token,
 	}
 
 	return

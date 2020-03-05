@@ -2,21 +2,24 @@ package server
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
+	"github.com/SnakeHacker/grandet/tushare"
+
 	"github.com/golang/glog"
+	"github.com/jinzhu/gorm"
 )
 
 // Servlet ...
 type Servlet struct {
 	Handler http.Handler
 	Conf    Conf
-	DB      *sql.DB
+	DB      *gorm.DB
+	Tushare *tushare.TuShare
 }
 
 // New new servlet
@@ -32,17 +35,21 @@ func New(conf Conf) (s *Servlet, err error) {
 		return nil, err
 	}
 
-	// clear data and create tables
+	// Init tushare
+	s.Tushare, err = tushare.New()
+	if err != nil {
+		glog.Error(err)
+		return nil, err
+	}
+
+	// drop tables and create tables
 	if conf.DB.Reset {
-		if err = batchExecSQLFileWithSuffix(s.DB, s.Conf.DB.SQLDir, DOWN_TABLE_SUFFIX); err != nil {
+		if err = s.ResetTables(); err != nil {
 			glog.Error(err)
 			return
 		}
 
-		if err = batchExecSQLFileWithSuffix(s.DB, s.Conf.DB.SQLDir, UP_TABLE_SUFFIX); err != nil {
-			glog.Error(err)
-			return
-		}
+		glog.Info("Reset db tables successfully!")
 	}
 
 	return s, nil
@@ -60,7 +67,7 @@ func (s *Servlet) StartOrDie() {
 	}
 
 	// auto reconnected db
-	go s.autoReConnectDB()
+	// go s.autoReConnectDB()
 
 	// Graceful shutdown http service.
 	go func() {

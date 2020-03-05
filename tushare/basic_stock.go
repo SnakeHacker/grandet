@@ -39,16 +39,10 @@ type StockBasicData struct {
 }
 
 // StockBasic ...
-func StockBasic() (resp StockBasicResponse, err error) {
-	url, token, err := API()
-	if err != nil {
-		glog.Error(err)
-		return
-	}
-
+func (t *TuShare) StockBasic() (resp StockBasicResponse, err error) {
 	reqBody := StockBasicRequest{
 		APIName: API_STOCK_BASIC,
-		Token:   token,
+		Token:   t.Token,
 	}
 
 	reqBodyJSON, err := json.Marshal(reqBody)
@@ -57,7 +51,7 @@ func StockBasic() (resp StockBasicResponse, err error) {
 		return
 	}
 
-	request, err := http.NewRequest("POST", url, bytes.NewReader(reqBodyJSON))
+	request, err := http.NewRequest("POST", t.URL, bytes.NewReader(reqBodyJSON))
 	if err != nil {
 		glog.Error(err)
 		return
