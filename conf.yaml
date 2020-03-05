@@ -1,6 +1,0 @@
-db:
-    username: grandet_test
-    password: grandet_test
-    host: localhost
-    port: 5432
-    database: grandet_db
