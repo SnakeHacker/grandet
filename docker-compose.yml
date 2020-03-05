@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_PASSWORD: grandet_test
       POSTGRES_USER: grandet_test
-      POSTGRES_DB: grandet_test
+      POSTGRES_DB: grandet_db
     container_name: grandet_db
     ports:
       - 5432:5432
