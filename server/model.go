@@ -33,3 +33,7 @@ type StockDaily struct {
 	Vol       int     `gorm:"column:vol; not null"`
 	Amount    float32 `gorm:"column:amount; not null"`
 }
+
+func (StockDaily) TableName() string {
+	return "daily"
+}

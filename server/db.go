@@ -63,12 +63,28 @@ func NewPostgreSQL(conf DBConf) (db *gorm.DB, err error) {
 
 // CreateTables create all tables
 func (s *Servlet) CreateTables() (err error) {
-	return s.DB.CreateTable(&StockMeta{}).Error
+	errs := s.DB.CreateTable(&StockMeta{}, &StockDaily{}).GetErrors()
+	if len(errs) != 0 {
+		for _, err := range errs {
+			glog.Error(err)
+		}
+		return
+	}
+
+	return
 }
 
 // DropTables drop all tables
 func (s *Servlet) DropTables() (err error) {
-	return s.DB.DropTableIfExists(&StockMeta{}).Error
+	errs := s.DB.DropTableIfExists(&StockMeta{}, &StockDaily{}).GetErrors()
+	if len(errs) != 0 {
+		for _, err := range errs {
+			glog.Error(err)
+		}
+		return
+	}
+
+	return
 }
 
 // ResetTables drop and create tables
