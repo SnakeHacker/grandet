@@ -1,6 +1,8 @@
 package server
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 // StockMeta ...
 type StockMeta struct {
@@ -22,16 +24,16 @@ func (StockMeta) TableName() string {
 type StockDaily struct {
 	gorm.Model
 	TsCode    string  `gorm:"column:ts_code; not null"`
-	TradeDate string  `gorm:"column:opentrade_date; not null"`
-	Open      float32 `gorm:"column:open; not null"`
-	High      float32 `gorm:"column:high; not null"`
-	Low       float32 `gorm:"column:low; not null"`
-	Close     float32 `gorm:"column:close; not null"`
-	PreClose  float32 `gorm:"column:pre_close; not null"`
-	Change    float32 `gorm:"column:change; not null"`
-	PctChg    float32 `gorm:"column:pct_chg; not null"`
-	Vol       int     `gorm:"column:vol; not null"`
-	Amount    float32 `gorm:"column:amount; not null"`
+	TradeDate string  `gorm:"column:trade_date; not null"`
+	Open      float64 `gorm:"column:open; not null"`
+	High      float64 `gorm:"column:high; not null"`
+	Low       float64 `gorm:"column:low; not null"`
+	Close     float64 `gorm:"column:close; not null"`
+	PreClose  float64 `gorm:"column:pre_close; not null"`
+	Change    float64 `gorm:"column:change; not null"`
+	PctChg    float64 `gorm:"column:pct_chg; not null"`
+	Vol       float64 `gorm:"column:vol; not null"`
+	Amount    float64 `gorm:"column:amount; not null"`
 }
 
 func (StockDaily) TableName() string {

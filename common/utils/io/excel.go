@@ -9,7 +9,7 @@ import (
 )
 
 // SaveSimpleXlsx ...
-func SaveSimpleXlsx(filename string, dir string, sheetName string, headers []string, data [][]string) (err error) {
+func SaveSimpleXlsx(filename string, dir string, sheetName string, headers []string, data [][]interface{}) (err error) {
 	file := xlsx.NewFile()
 	sheet, err := file.AddSheet(sheetName)
 	if err != nil {
@@ -29,7 +29,7 @@ func SaveSimpleXlsx(filename string, dir string, sheetName string, headers []str
 		r := sheet.AddRow()
 		for _, col := range row {
 			cell := r.AddCell()
-			cell.Value = col
+			cell.Value = fmt.Sprintf("%v", col)
 		}
 	}
 

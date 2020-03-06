@@ -27,6 +27,8 @@ var (
 	ErrTushareToken              = makeError(errTushare, "token is empty.")
 	ErrTushareStockFieldsLen     = makeError(errTushare, "length of stock fields is not equal to headers.")
 	ErrTushareStockFieldsUnknown = makeError(errTushare, "unknown stock field.")
+	ErrTushareDailyParamsEmpty   = makeError(errTushare, "daily params is empty.")
+	ErrTushareDailyFieldsUnknown = makeError(errTushare, "unknown daily field.")
 )
 
 func makeError(scope errScope, msg ...string) error {

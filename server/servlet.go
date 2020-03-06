@@ -67,7 +67,7 @@ func (s *Servlet) StartOrDie() {
 	}
 
 	// auto reconnected db
-	// go s.autoReConnectDB()
+	go s.autoReConnectDB()
 
 	// Graceful shutdown http service.
 	go func() {

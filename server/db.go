@@ -20,7 +20,6 @@ type DBConf struct {
 	Database     string        `yaml:"database"`
 	Reset        bool          `yaml:"reset"`
 	ReconnectSec time.Duration `yaml:"reconnect_sec"`
-	SQLDir       string        `yaml:"sql_dir"`
 }
 
 func (c DBConf) validate() error {
@@ -59,6 +58,18 @@ func NewPostgreSQL(conf DBConf) (db *gorm.DB, err error) {
 	db.DB().SetMaxOpenConns(100)
 
 	return
+}
+
+func (s *Servlet) autoReConnectDB() (err error) {
+	for {
+		if s.DB.DB().Ping() != nil {
+			s.DB, err = NewPostgreSQL(s.Conf.DB)
+			if err != nil {
+				glog.Error(err)
+			}
+		}
+		time.Sleep(3000)
+	}
 }
 
 // CreateTables create all tables
