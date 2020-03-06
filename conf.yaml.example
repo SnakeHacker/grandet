@@ -6,7 +6,6 @@ db:
     database: grandet_db
     reset: true
     reconnect_sec: 3
-    sql_dir: ${YOUR_SQL_DIR}
 web:
     port: 8888
     write_timeout_sec: 10

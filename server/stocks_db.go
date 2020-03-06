@@ -54,7 +54,7 @@ func stockMetaHeaderIdx(headers []string) (
 }
 
 // BatchInsertStockMeta ...
-func (s *Servlet) BatchInsertStockMeta(headers []string, items [][]string) (err error) {
+func (s *Servlet) BatchInsertStockMeta(headers []string, items [][]interface{}) (err error) {
 	var stocks []*StockMeta
 	headerTsCodeIdx,
 		headerSymbolIdx,
@@ -77,13 +77,13 @@ func (s *Servlet) BatchInsertStockMeta(headers []string, items [][]string) (err 
 		}
 
 		stocks = append(stocks, &StockMeta{
-			TsCode:   fields[headerTsCodeIdx],
-			Symbol:   fields[headerSymbolIdx],
-			Name:     fields[headerNameIdx],
-			Area:     fields[headerAreaIdx],
-			Industry: fields[headerIndustryIdx],
-			Market:   fields[headerMarketIdx],
-			ListDate: fields[headerListDateIdx],
+			TsCode:   fields[headerTsCodeIdx].(string),
+			Symbol:   fields[headerSymbolIdx].(string),
+			Name:     fields[headerNameIdx].(string),
+			Area:     fields[headerAreaIdx].(string),
+			Industry: fields[headerIndustryIdx].(string),
+			Market:   fields[headerMarketIdx].(string),
+			ListDate: fields[headerListDateIdx].(string),
 		})
 	}
 
@@ -107,6 +107,17 @@ func (s *Servlet) BatchInsertStockMeta(headers []string, items [][]string) (err 
 	}
 
 	err = s.DB.Exec(buf.String()).Error
+	if err != nil {
+		glog.Error(err)
+		return
+	}
+
+	return
+}
+
+// FindStocks ...
+func (s *Servlet) FindStocks() (stocks []StockMeta, err error) {
+	err = s.DB.Find(&stocks).Error
 	if err != nil {
 		glog.Error(err)
 		return
