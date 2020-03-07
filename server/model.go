@@ -10,9 +10,9 @@ type StockMeta struct {
 	TsCode   string `gorm:"column:ts_code; not null; unique"`
 	Symbol   string `gorm:"column:symbol; not null; unique"`
 	Name     string `gorm:"column:name; not null; unique"`
-	Area     string `gorm:"column:area; not null"`
-	Industry string `gorm:"column:industry; not null"`
-	Market   string `gorm:"column:market; not null"`
+	Area     string `gorm:"column:area; not null; index"`
+	Industry string `gorm:"column:industry; not null; index"`
+	Market   string `gorm:"column:market; not null; index"`
 	ListDate string `gorm:"column:list_date; not null"`
 }
 
@@ -23,7 +23,7 @@ func (StockMeta) TableName() string {
 // StockDaily ...
 type StockDaily struct {
 	gorm.Model
-	TsCode    string  `gorm:"column:ts_code; not null"`
+	TsCode    string  `gorm:"column:ts_code; not null; index"`
 	TradeDate string  `gorm:"column:trade_date; not null"`
 	Open      float64 `gorm:"column:open; not null"`
 	High      float64 `gorm:"column:high; not null"`
