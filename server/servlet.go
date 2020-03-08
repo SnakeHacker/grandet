@@ -44,7 +44,7 @@ func New(conf Conf) (s *Servlet, err error) {
 
 	// drop tables and create tables
 	if conf.DB.Reset {
-		if err = s.ResetTables(); err != nil {
+		if err = s.ResetTables(&StockMeta{}, &StockDaily{}, &ConceptDetail{}); err != nil {
 			glog.Error(err)
 			return
 		}

@@ -73,8 +73,8 @@ func (s *Servlet) autoReConnectDB() (err error) {
 }
 
 // CreateTables create all tables
-func (s *Servlet) CreateTables() (err error) {
-	errs := s.DB.CreateTable(&StockMeta{}, &StockDaily{}).GetErrors()
+func (s *Servlet) CreateTables(values ...interface{}) (err error) {
+	errs := s.DB.CreateTable(values...).GetErrors()
 	if len(errs) != 0 {
 		for _, err := range errs {
 			glog.Error(err)
@@ -86,8 +86,8 @@ func (s *Servlet) CreateTables() (err error) {
 }
 
 // DropTables drop all tables
-func (s *Servlet) DropTables() (err error) {
-	errs := s.DB.DropTableIfExists(&StockMeta{}, &StockDaily{}).GetErrors()
+func (s *Servlet) DropTables(values ...interface{}) (err error) {
+	errs := s.DB.DropTableIfExists(values...).GetErrors()
 	if len(errs) != 0 {
 		for _, err := range errs {
 			glog.Error(err)
@@ -99,13 +99,13 @@ func (s *Servlet) DropTables() (err error) {
 }
 
 // ResetTables drop and create tables
-func (s *Servlet) ResetTables() (err error) {
-	if err = s.DropTables(); err != nil {
+func (s *Servlet) ResetTables(values ...interface{}) (err error) {
+	if err = s.DropTables(values...); err != nil {
 		glog.Error(err)
 		return
 	}
 
-	if err = s.CreateTables(); err != nil {
+	if err = s.CreateTables(values...); err != nil {
 		glog.Error(err)
 		return
 	}

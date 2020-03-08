@@ -78,7 +78,19 @@ func main() {
 			return
 		}
 
-		time.Sleep(time.Millisecond * 300)
+		resp, err = s.Tushare.ConceptDetail(stock.TsCode)
+		if err != nil {
+			glog.Error(err)
+			return
+		}
+
+		glog.Infof("Inserting [%v] concept detail into db ...", stock.TsCode)
+		if err = s.InsertConceptDetail(resp.Data.Fields, resp.Data.Items); err != nil {
+			glog.Error(err)
+			return
+		}
+
+		time.Sleep(time.Millisecond * 800)
 	}
 
 }

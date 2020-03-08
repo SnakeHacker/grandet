@@ -3,6 +3,7 @@ package server
 import (
 	"bytes"
 	"fmt"
+	"time"
 
 	"github.com/SnakeHacker/grandet/common"
 	"github.com/golang/glog"
@@ -154,6 +155,21 @@ func (s *Servlet) BatchInsertDaily(headers []string, items [][]interface{}) (err
 	err = s.DB.Exec(buf.String()).Error
 	if err != nil {
 		glog.Errorf("%v. SQL: %v", err, buf.String())
+		return
+	}
+
+	return
+}
+
+// FindDaily ...
+func (s *Servlet) FindDailys(tsCodes []string, date time.Time) (dailys []StockDaily, err error) {
+	err = s.DB.Where(
+		"ts_code IN (?) AND trade_date = ?",
+		tsCodes, date.Format("20060102")).
+		Find(&dailys).Error
+
+	if err != nil {
+		glog.Error(err)
 		return
 	}
 

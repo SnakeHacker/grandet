@@ -26,7 +26,7 @@ mv conf.yaml.example conf.yaml
 mv Makefile.example Makefile
 ```
 
-2. 修改 Makefile中 ${YOUR_TUSHARE_TOKEN} 为实际token值([Tushare Token注册申请](https://tushare.pro/))
+2. 修改 Makefile中 ${YOUR_TUSHARE_TOKEN} 为实际token值([Tushare Token注册申请](https://tushare.pro/register?reg=238705))
 
 # 使用
 ## 启动数据库
