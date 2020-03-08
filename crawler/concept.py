@@ -45,7 +45,7 @@ def get_concept(stocks, conn, debug):
             moreBtn = browser.find_element_by_xpath('//*[@class="em alignCenter split"]\
                 /a[contains(@class, "ml5 moreSplit fr")]')
             moreBtn.click()
-            time.sleep(1)
+            time.sleep(2)
         except Exception:
             # no moreBtn
             pass
