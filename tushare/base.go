@@ -10,11 +10,12 @@ import (
 )
 
 const (
-	API_STOCK_BASIC = "stock_basic"
-	API_DAILY       = "daily"
-	TS_CODE         = "ts_code"
-	START_DATE      = "start_date"
-	END_DATE        = "end_date"
+	API_STOCK_BASIC    = "stock_basic"
+	API_DAILY          = "daily"
+	API_CONCEPT_DETAIL = "concept_detail"
+	TS_CODE            = "ts_code"
+	START_DATE         = "start_date"
+	END_DATE           = "end_date"
 )
 
 // TushareHttpRequest ...

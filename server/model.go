@@ -39,3 +39,25 @@ type StockDaily struct {
 func (StockDaily) TableName() string {
 	return "daily"
 }
+
+// SortedDailys ...
+type SortedDailys []StockDaily
+
+func (p SortedDailys) Len() int { return len(p) }
+
+func (p SortedDailys) Less(i, j int) bool {
+	return p[i].Amount > p[j].Amount
+}
+
+func (p SortedDailys) Swap(i, j int) { p[i], p[j] = p[j], p[i] }
+
+// ConceptDetail ...
+type ConceptDetail struct {
+	gorm.Model
+	ConceptName string `gorm:"column:concept_name; not null"`
+	TsCode      string `gorm:"column:ts_code; not null"`
+}
+
+func (ConceptDetail) TableName() string {
+	return "concept_details"
+}
