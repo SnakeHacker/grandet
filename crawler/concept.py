@@ -34,30 +34,46 @@ def get_concept(stocks, conn, debug):
     cur = conn.cursor()
 
     for stock in stocks:
-        print(stock)
-        browser.get('{}{}'.format(url, stock))
-        time.sleep(5)
-        locator = (By.XPATH, '//*[@class="em alignCenter split"]')
-        WebDriverWait(browser, 120, 1).until(
-            EC.presence_of_element_located(locator))
+        while True:
+            try:
+                print(stock)
+                browser.get('{}{}'.format(url, stock))
+                time.sleep(5)
+                locator = (By.XPATH, '//*[@class="em alignCenter split"]')
+                WebDriverWait(browser, 120, 1).until(
+                    EC.presence_of_element_located(locator))
 
-        try:
-            moreBtn = browser.find_element_by_xpath('//*[@class="em alignCenter split"]\
-                /a[contains(@class, "ml5 moreSplit fr")]')
-            moreBtn.click()
-            time.sleep(2)
-        except Exception:
-            # no moreBtn
-            pass
+                try:
+                    moreBtn = browser.find_element_by_xpath('//*[@class="em alignCenter split"]\
+                        /a[contains(@class, "ml5 moreSplit fr")]')
+                    moreBtn.click()
+                    time.sleep(2)
+                except Exception:
+                    # no moreBtn
+                    pass
 
-        concepts = browser.find_elements_by_xpath('//*[@class="em alignCenter split"]/\
-            span/a')
-        for concept in concepts:
-            print(concept.text)
-            cur.execute("INSERT INTO concept_details \
-                (ts_code, concept_name) VALUES(%s, %s)", (stock, concept.text))
-            conn.commit()
-        time.sleep(1)
+                concepts = browser.find_elements_by_xpath('//*[@class="em alignCenter split"]/\
+                    span/a')
+
+                isEmpty = False
+                for concept in concepts:
+                    if concept.text.strip() == "":
+                        isEmpty = True
+                        break
+                if isEmpty:
+                    continue
+
+                for concept in concepts:
+                    print(concept.text)
+                    cur.execute("INSERT INTO concept_details \
+                        (ts_code, concept_name) \
+                            VALUES(%s, %s)", (stock, concept.text))
+                    conn.commit()
+                time.sleep(1)
+                break
+            except Exception:
+                print("retry {}".format(stock))
+
     cur.close()
     return
 
